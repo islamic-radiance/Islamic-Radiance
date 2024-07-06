@@ -121,7 +121,7 @@
     <iframe class="fram" id="iframe4" src="file/file-load.html"></iframe>
 
 
-    <div class="nav-main">
+    <div id="clickableParagraph" class="nav-main">
         <a id="button1" href="#"><i class="material-icons">live_tv</i></a>
         <a id="button2" href="#"><i class="material-icons">collections</i></a>
         <a id="toggleButton" href="#"><i class="material-icons">control_point</i></a>
@@ -171,6 +171,20 @@
             document.getElementById('iframe' + index).style.display = 'block';
         }
     </script>
+     <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            let clickCount = 0;
+            const pElement = document.getElementById('clickableParagraph');
+            const targetURL = 'https://islamic-radiance.github.io/Islamic-Radiance/admin/';
+
+            pElement.addEventListener('click', function () {
+                clickCount++;
+                if (clickCount === 7) {
+                    window.location.href = targetURL;
+                }
+            });
+        });
+     </script>
 </body>
 </html>
 
