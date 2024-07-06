@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Video</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <style type="text/css" media="all">
+  body{
+   zoom: ;
+  }
+   img{
+    border-radius: 10px;
+    margin: 5px;
+    
+   }
+   video{
+    border-radius: 10px;
+    margin: 5px;
+   }
+   a{
+    margin: 15px;
+    font-size: 30px;
+    
+   }
+  </style>
+</head>
+<body>
+
+<div class="container mt-2">
+    <div class="card">
+        <div class="card-body">
+            <center><h3>Video</h3><button id="btn" class="btn btn-primary mt-2" onclick="getdata()">Load Blogs</button> </center>
+            <div class="row mt-4" id="posts"></div>
+        </div>
+    </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/7.14.2/firebase.js"></script>
+
+<script>
+    var firebaseConfig = {
+        apiKey: "AIzaSyDIijjkD8sWiMMYQOr6fzf2gy4mO086px4",
+        authDomain: "file-up-and-see.firebaseapp.com",
+        databaseURL: "https://file-up-and-see-default-rtdb.firebaseio.com",
+        projectId: "file-up-and-see",
+        storageBucket: "file-up-and-see.appspot.com",
+        messagingSenderId: "467223490440",
+        appId: "1:467223490440:web:c6a65e823f20edf427943d"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    firebase.analytics();
+
+    function getdata(){
+        firebase.database().ref('videos/').once('value').then(function(snapshot){
+            var posts_div = document.getElementById('posts');
+            posts_div.innerHTML = "";
+            var data = snapshot.val();
+            for(let[key,value] of Object.entries(data)){
+                var mediaElement = '';
+                if (value.mediaType) {
+                    if (value.mediaType.startsWith('image/')) {
+                        mediaElement = "<img src='" + value.mediaURL + "' style='height:;'>";
+                    } else if (value.mediaType.startsWith('video/')) {
+                        mediaElement = "<video width='' height='' controls><source src='" + value.mediaURL + "' type='" + value.mediaType + "'>Your browser does not support the video tag.</video>";
+                    } else if (value.mediaType.startsWith('audio/')) {
+                        mediaElement = "<audio controls><source src='" + value.mediaURL + "' type='" + value.mediaType + "'>Your browser does not support the audio element.</audio>";
+                    } else {
+                        mediaElement = "<a href='" + value.mediaURL + "' download>Download File</a>";
+                    }
+                } else {
+                    mediaElement = "<p>No media uploaded</p>";
+                }
+
+                posts_div.innerHTML = "<div class='col-sm-4 mt-2 mb-1'>"+
+                "<div class='card'>"+
+                mediaElement +
+                "<div class='card-body'><p class='card-text'>"+ value.text1 +"</p>"+
+                "<p class='card-text'>"+ value.text2 +"</p>"+
+                "<p class='card-text'>"+ value.text3 +"</p>"+
+                "<button class='btn btn-danger' id='"+key+"' onclick='delete_post(this.id)'>Delete</button>"+
+                "</div></div></div>" + posts_div.innerHTML;
+            }
+        });
+    }
+
+    function delete_post(key){
+        firebase.database().ref('videos/'+key).remove();
+        getdata();
+    }
+
+</script>
+
+
+</body>
+</html>
