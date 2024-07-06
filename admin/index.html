@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>Admin Panel</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style type="text/css" media="all">
+        body {
+         zoom: 3;
+            display: ;
+            flex-direction: column;
+            align-items: ;
+            text-align: ;
+            margin: 5px;
+            font-family: 'Roboto', sans-serif;
+            background-color: #f0f0f0;
+        }
+        h4 {
+            margin-left: 15px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        details {
+            margin: 10px 0;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 15px;
+            width: 90%;
+        }
+        summary {
+            font-size: 1.2em;
+            font-weight: 700;
+            color: #555;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+        summary:hover {
+            color: #007BFF;
+        }
+        i {
+            zoom: 1.8;
+            margin-right: 7px;
+        }
+        details[open] summary {
+            color: #007BFF;
+        }
+        div{
+         
+        }
+        iframe{
+         width: 99%;
+         height: 500px;
+        }
+    </style>
+    <style>
+  .alert-box {
+   margin: 3px;
+   margin-top: 200px;
+    background-color: #d4d4d4;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    text-align: center;
+    border: 0.6px solid black;
+  }
+
+  .alert-box h2 {
+    color: #333;
+    margin-bottom: 15px;
+  }
+
+  .alert-box input {
+    width: 95%;
+    padding: 10px;
+    border: 1px dotted gray;
+    border-radius: 5px;
+    margin-bottom: 10px;
+  }
+
+  .alert-box button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+  }
+</style>
+</head>
+<body>
+<div class="alert-box" id="passwordAlert">
+  <h2>পাসওয়ার্ড প্রবেশ করুন</h2>
+  <input type="password" id="passwordInput" placeholder="পাসওয়ার্ড">
+  <button onclick="verifyPassword()">প্রবেশ করুন</button>
+</div>
+
+<div style="display:none;" id="content">
+ 
+   <img style="width: 50%;
+     border: 1px dotted black;
+     border-radius: 10px;"
+ src="islamic-radiance.jpg" alt="" /><hr />
+    <div>
+     
+        <h4>What type of file do you upload?</h4>
+        
+        <details>
+            <summary>
+                <i class="material-icons">live_tv</i>Video
+            </summary><hr />
+            <iframe src="video.html" frameborder="0"></iframe>
+        </details>
+        
+        <details>
+            <summary>
+                <i class="material-icons">collections</i>Image
+            </summary><hr />
+            <iframe src="image.html" frameborder="0"></iframe>
+        </details>
+        
+        <details>
+            <summary>
+                <i class="material-icons">music_note</i>Music
+            </summary><hr />
+            <iframe src="music.html" frameborder="0"></iframe>
+        </details>
+        
+        <details>
+            <summary>
+                <i class="material-icons">attachment</i>File
+            </summary><hr />
+            <iframe  src="file.html" frameborder="0"></iframe>
+        </details>
+        
+    </div>
+ 
+</div>
+
+<script>
+  function verifyPassword() {
+    const passwordInput = document.getElementById("passwordInput");
+    const correctPassword = "Nazrul@2024"; // সঠিক পাসওয়ার্ড পরিবর্তন করুন
+
+    if (passwordInput.value === correctPassword) {
+      document.getElementById("passwordAlert").style.display = "none"; // অ্যালার্ট বক্স লুকিয়ে ফেলুন
+      document.getElementById("content").style.display = "block"; // কনটেন্ট বক্স দেখানো হবে
+    } else {
+      alert("ভুল পাসওয়ার্ড!");
+    }
+  }
+</script>
+</body>
+  </html
