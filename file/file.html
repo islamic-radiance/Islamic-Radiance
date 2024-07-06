@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>File</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .form-title {
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+        .post-title {
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .post-meta {
+            color: #888;
+        }
+        .post-content {
+            margin-top: 10px;
+        }
+        .alert-success {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+        .alert-danger {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+        .custom-progress-bar {
+            background-color: #e0e0e0; /* Light gray background */
+            border-radius: 10px; /* Rounded corners */
+            height: 15px;
+            overflow: hidden;
+        }
+        .custom-progress-bar .progress-bar {
+            background-color: #4CAF50; /* Green progress bar */
+            border-radius: 10px; /* Rounded corners */
+            height: 190%;
+            text-align: center;
+            color: white; /* White text for progress percentage */
+        }
+    </style>
+    
+</head>
+<body>
+
+<div>
+    <div class="card">
+        <div class="card-body">
+            <form id="post-form">
+                <center><h3 class="form-title">File Post</h3></center>
+                <input class="form-control mb-3" type="text" name="file1" id="file1" placeholder="Enter Video Title" required="required"/>
+                <input class="form-control mb-3" type="text" name="file2" id="file2" placeholder="Channel Name" required="required"/>
+                <input type="hidden" class="form-control mb-3" name="file3" id="file3" placeholder="Date" required=""/>
+                <input type="file" class="form-control mb-3" id="file4" accept="" required="required">
+                <div class="text-center">
+                    <button type="button" class="btn btn-success" onclick="upload()">Upload</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="row mt-4" id="posts"></div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/7.14.2/firebase.js"></script>
+
+<script>
+    var firebaseConfig = {
+        apiKey: "AIzaSyDIijjkD8sWiMMYQOr6fzf2gy4mO086px4", // Replace with your Firebase API Key
+        authDomain: "file-up-and-see.firebaseapp.com", 
+        databaseURL: "https://file-up-and-see-default-rtdb.firebaseio.com",
+        projectId: "file-up-and-see", 
+        storageBucket: "file-up-and-see.appspot.com",
+        messagingSenderId: "467223490440",
+        appId: "1:467223490440:web:c6a65e823f20edf427943d"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    firebase.analytics();
+
+    function upload(){
+        var file4 = document.getElementById('file4').files[0]; 
+        var file1 = document.getElementById('file1').value;
+        var file2 = document.getElementById('file2').value;
+        
+        // Set the hidden date input field with the current date
+        var currentDate = new Date().toISOString().split('T')[0]; 
+        document.getElementById('file3').value = currentDate;
+        var file3 = document.getElementById('file3').value;
+
+        // Check if any input field is empty
+        if (file1.trim() === "" || file2.trim() === "" || !file4) {
+            showAlert("Please fill in all fields", 'danger');
+            return;
+        }
+
+        if (file4) {
+            var fileName = file4.name;
+            var storageRef = firebase.storage().ref('file/' + fileName);
+            var uploadTask = storageRef.put(file4); 
+
+            uploadTask.on('state_changed', 
+                (snapshot) => {
+                    var progress = (uploadTask.snapshot.bytesTransferred / uploadTask.snapshot.totalBytes) * 100;
+                    // Update the progress bar
+                    updateProgressBar(progress);
+                }, 
+                (error) => {
+                    alert(error.message);
+                    showAlert(error.message, 'danger');
+                }, 
+                () => {
+                    uploadTask.snapshot.ref.getDownloadURL().then(function(downloadURL){
+                        saveData(file1, file2, file3, downloadURL, file4.type); 
+                    });
+                }
+            );
+        } else {
+            saveData(file1, file2, file3, null, null);
+        }
+    }
+
+    function saveData(file1, file2, file3, downloadURL, mediaType) {
+       firebase.database().ref('file/').push().set({
+            text1: file1,
+            text2: file2,
+            text3: file3,
+            mediaURL: downloadURL,
+            mediaType: mediaType
+        }, function(error){
+            if(error){
+                showAlert("Error while uploading", 'danger');
+            }else{
+                showAlert("Successfully uploaded", 'success');
+                document.getElementById('post-form').reset();
+                getdata(); // Assuming you have a function to get data from Firebase
+            }
+        });
+    }
+
+    function updateProgressBar(progress) {
+        const alertDiv = document.querySelector('.alert-progress');
+        if (!alertDiv) {
+            showAlert("Uploading...", 'info');
+            const progressBar = document.querySelector('.custom-progress-bar .progress-bar');
+            progressBar.style.width = progress + '%';
+            progressBar.textContent = progress + '%';
+        } else {
+            const progressBar = document.querySelector('.custom-progress-bar .progress-bar');
+            progressBar.style.width = progress + '%';
+            progressBar.textContent = progress + '%';
+        }
+    }
+
+    function showAlert(message, type) {
+        const alertDiv = document.createElement('div');
+        alertDiv.classList.add('alert', `alert-${type}`, 'alert-dismissible', 'fade', 'show');
+        alertDiv.setAttribute('role', 'alert');
+        alertDiv.innerHTML = `
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">×</span>
+            </button>
+            ${message}
+            <div class="custom-progress-bar mt-2">
+                <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+        `;
+
+        document.querySelector('.row.mt-4').insertAdjacentElement('beforebegin', alertDiv);
+
+        setTimeout(() => {
+            alertDiv.remove();
+        }, 7000);
+    }
+</script>
+
+
+</body>
+</html>
