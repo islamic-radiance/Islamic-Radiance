@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Islamic Radiance</title>
+ <link rel="icon" href="file/icon.jpg" title="" type="" />
+ <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+ <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+ <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+ <style>
+ body{
+  zoom: 3;
+ }
+    h{
+     font-size: 30px;
+    }
+   
+    
+        .nav-main {
+            display: flex;
+            text-align: center;
+            justify-content: center;
+            background-color: #41ff23;
+            height: 48px;
+            border-radius: 10px;
+            box-shadow: black 0px 0px 5px,
+                black 0px 5px 5px;
+            border: none;
+            position: fixed; /* Add this line */
+            bottom: 0; /* Add this line */
+            left: 0; /* Add this line */
+            width: 100%; /* Add this line */
+        }
+        i{
+         zoom: 1.5;
+        }
+        i:hover{
+         zoom: 2.5;
+        }
+        a {
+            text-align: center;
+            text-decoration: none;
+            font-size: 33px;
+            margin-top: -16px;
+            margin-right: 4px;
+            margin-left: 4px;
+            height: 50px;
+            width: 50px;
+            padding-top: 10px;
+            background-color: #41ff23;
+            border-radius: 15px;
+            color: white;
+            box-shadow: black 0px 0px 5px,
+                black 0px 5px 5px;
+            transition: 0.5s;
+        }
+
+        a:hover {
+            transform: translateY(-50px);
+            margin-left: -2px;
+            margin-right: -2px;
+            border: 2px solid #c8ffd1;
+            border-radius: 100%;
+            height: 80px;
+            width: 80px;
+            background-color: #ff0505;
+            
+            box-shadow: black 0px 0px 5px,
+                black 0px 19px 22px;
+            font-size: 50px;
+            color: white;
+        }
+        .loader{
+        border-radius: 7px;
+        height: 450px;
+        }
+        .container {
+            padding-bottom: 50px; /* Add padding for the navigation bar */
+        }
+        
+        .fram {
+            display: none;
+            width: 100%;
+            height: 100000px;
+            border: 1px solid black;
+        }
+        #iframe1{
+         display: block;
+        }
+    </style>
+ <style>
+        .myForm {
+         width: 90%;
+         height: px;
+            display: none; /* প্রথমে ফর্ম লুকানো */
+            position: fixed; /* ফর্ম স্ক্রিনে স্থির থাকবে */
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%); /* মাঝখানে অবস্থান */
+            background-color: #dddddd;
+            padding: 5px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+        .closebtn {
+  position: absolute;
+  top: 5px;
+  right: 15px;
+  color: red;
+  font-size: 33px;
+  cursor: pointer;
+}
+    </style>
+
+</head>
+<body>
+    <iframe class="fram" id="iframe1" src="file/video-load.html"></iframe>
+    <iframe class="fram" id="iframe2" src="file/image-load.html"></iframe>
+    <iframe class="fram" id="iframe3" src="file/music-load.html"></iframe>
+    <iframe class="fram" id="iframe4" src="file/file-load.html"></iframe>
+
+
+    <div class="nav-main">
+        <a id="button1" href="#"><i class="material-icons">live_tv</i></a>
+        <a id="button2" href="#"><i class="material-icons">collections</i></a>
+        <a id="toggleButton" href="#"><i class="material-icons">control_point</i></a>
+       
+        <a id="button3" href="#"><i class="material-icons">music_note</i></a>
+        
+        <a id="button4" href="#"><i class="material-icons">attachment</i></a>
+     </div>
+
+ <div id="hiddenDiv" class="myForm">
+     <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+     <iframe class="loader" width="100%" height="400px" src="file/file-uploader.html" frameborder="0"></iframe>
+ </div>
+    <script>
+    const toggleButton = document.getElementById('toggleButton');
+    const hiddenDiv = document.getElementById('hiddenDiv');
+
+    toggleButton.addEventListener('click', () => {
+      if (hiddenDiv.style.display === 'none') {
+        hiddenDiv.style.display = 'block';
+      } else {
+        hiddenDiv.style.display = 'none';
+      }
+    });
+  </script>
+  
+<script>
+        document.getElementById('button1').addEventListener('click', function() {
+            showIframe(1);
+        });
+        document.getElementById('button2').addEventListener('click', function() {
+            showIframe(2);
+        });
+        document.getElementById('button3').addEventListener('click', function() {
+            showIframe(3);
+        });
+        document.getElementById('button4').addEventListener('click', function() {
+            showIframe(4);
+        });
+
+        function showIframe(index) {
+            // Hide all iframes
+            for (let i = 1; i <= 4; i++) {
+                document.getElementById('iframe' + i).style.display = 'none';
+            }
+            // Show the selected iframe
+            document.getElementById('iframe' + index).style.display = 'block';
+        }
+    </script>
+</body>
+</html>
+
+
