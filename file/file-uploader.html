@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>File Upload Types</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style type="text/css" media="all">
+        body {
+         zoom: ;
+            display: ;
+            flex-direction: column;
+            align-items: ;
+            text-align: ;
+            margin: 5px;
+            font-family: 'Roboto', sans-serif;
+            background-color: #f0f0f0;
+        }
+        h4 {
+            margin-left: 15px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        details {
+            margin: 10px 0;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 15px;
+            width: 90%;
+        }
+        summary {
+            font-size: 1.2em;
+            font-weight: 700;
+            color: #555;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+        summary:hover {
+            color: #007BFF;
+        }
+        i {
+            zoom: 1.8;
+            margin-right: 7px;
+        }
+        details[open] summary {
+            color: #007BFF;
+        }
+        div{
+         
+        }
+        iframe{
+         width: 99%;
+         height: 400px;
+        }
+    </style>
+    
+</head>
+<body>
+  <img style="width: 50%;
+     border: 1px dotted black;
+     border-radius: 10px;"
+ src="islamic-radiance.jpg" alt="" /><hr />
+    <div>
+     
+        <h4>What type of file do you upload?</h4>
+        
+        <details>
+            <summary>
+                <i class="material-icons">live_tv</i>Video
+            </summary><hr />
+            <iframe src="video.html" frameborder="0"></iframe>
+        </details>
+        
+        <details>
+            <summary>
+                <i class="material-icons">collections</i>Image
+            </summary><hr />
+            <iframe src="image.html" frameborder="0"></iframe>
+        </details>
+        
+        <details>
+            <summary>
+                <i class="material-icons">music_note</i>Music
+            </summary><hr />
+            <iframe src="music.html" frameborder="0"></iframe>
+        </details>
+        
+        <details>
+            <summary>
+                <i class="material-icons">attachment</i>File
+            </summary><hr />
+            <iframe  src="file.html" frameborder="0"></iframe>
+        </details>
+        
+    </div>
+</body>
+</html>

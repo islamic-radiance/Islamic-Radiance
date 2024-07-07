@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Video</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+    body{
+     zoom: 3;
+    }
+        .form-title {
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+        .post-title {
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .post-meta {
+            color: #888;
+        }
+        .post-content {
+            margin-top: 10px;
+        }
+        .alert-success {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+        .alert-danger {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+        .custom-progress-bar {
+            background-color: #e0e0e0; /* Light gray background */
+            border-radius: 10px; /* Rounded corners */
+            height: 15px;
+            overflow: hidden;
+        }
+        .custom-progress-bar .progress-bar {
+            background-color: #4CAF50; /* Green progress bar */
+            border-radius: 10px; /* Rounded corners */
+            height: 190%;
+            text-align: center;
+            color: white; /* White text for progress percentage */
+        }
+    </style>
+    
+</head>
+<body>
+
+<div>
+    <div class="card">
+        <div class="card-body">
+            <form id="post-form">
+                <center><h3 class="form-title" >Video Post</h3></center>
+                <input class="form-control mb-3" type="text" name="video1" id="video1" placeholder="Enter Video Title" required="required"/>
+                <input class="form-control mb-3" type="text" name="video2" id="video2" placeholder="Channel Name" required="required"/>
+                <input type="hidden" class="form-control mb-3" name="video3" id="video3" placeholder="Date" required=""/>
+                <input type="file" class="form-control mb-3" id="video4" accept="video/*" required="required">
+                <div class="text-center">
+                    <button type="button" class="btn btn-success" onclick="upload()">Upload</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="row mt-4" id="posts"></div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/7.14.2/firebase.js"></script>
+
+<script>
+    var firebaseConfig = {
+        apiKey: "AIzaSyDIijjkD8sWiMMYQOr6fzf2gy4mO086px4", // Replace with your Firebase API Key
+        authDomain: "file-up-and-see.firebaseapp.com", 
+        databaseURL: "https://file-up-and-see-default-rtdb.firebaseio.com",
+        projectId: "file-up-and-see", 
+        storageBucket: "file-up-and-see.appspot.com",
+        messagingSenderId: "467223490440",
+        appId: "1:467223490440:web:c6a65e823f20edf427943d"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    firebase.analytics();
+
+    function upload(){
+        var video4 = document.getElementById('video4').files[0]; // Changed 'media' to 'video4'
+        var video1 = document.getElementById('video1').value;
+        var video2 = document.getElementById('video2').value;
+        
+        // Set the hidden date input field with the current date
+        var currentDate = new Date().toISOString().split('T')[0]; // Get only the date part
+        document.getElementById('video3').value = currentDate;
+        var video3 = document.getElementById('video3').value;
+
+        // Check if any input field is empty
+        if (video1.trim() === "" || video2.trim() === "" || !video4) {
+            showAlert("Please fill in all fields", 'danger');
+            return;
+        }
+
+        if (video4) {
+            var videoName = video4.name;
+            var storageRef = firebase.storage().ref('videos/' + videoName);
+            var uploadTask = storageRef.put(video4); // Changed 'media' to 'video4'
+
+            uploadTask.on('state_changed', 
+                (snapshot) => {
+                    var progress = (uploadTask.snapshot.bytesTransferred / uploadTask.snapshot.totalBytes) * 100;
+                    // Update the progress bar
+                    updateProgressBar(progress);
+                }, 
+                (error) => {
+                    alert(error.message);
+                    showAlert(error.message, 'danger');
+                }, 
+                () => {
+                    uploadTask.snapshot.ref.getDownloadURL().then(function(downloadURL){
+                        saveData(video1, video2, video3, downloadURL, video4.type); // Changed 'media' to 'video4'
+                    });
+                }
+            );
+        } else {
+            saveData(video1, video2, video3, null, null);
+        }
+    }
+
+    function saveData(video1, video2, video3, downloadURL, mediaType) {
+       firebase.database().ref('videos/').push().set({
+            text1: video1,
+            text2: video2,
+            text3: video3,
+            mediaURL: downloadURL,
+            mediaType: mediaType
+        }, function(error){
+            if(error){
+                showAlert("Error while uploading", 'danger');
+            }else{
+                showAlert("Successfully uploaded", 'success');
+                document.getElementById('post-form').reset();
+                getdata(); // Assuming you have a function to get data from Firebase
+            }
+        });
+    }
+
+    function updateProgressBar(progress) {
+        const alertDiv = document.querySelector('.alert-progress');
+        if (!alertDiv) {
+            showAlert("Uploading...", 'info');
+            const progressBar = document.querySelector('.custom-progress-bar .progress-bar');
+            progressBar.style.width = progress + '%';
+            progressBar.textContent = progress + '%';
+        } else {
+            const progressBar = document.querySelector('.custom-progress-bar .progress-bar');
+            progressBar.style.width = progress + '%';
+            progressBar.textContent = progress + '%';
+        }
+    }
+
+    function showAlert(message, type) {
+        const alertDiv = document.createElement('div');
+        alertDiv.classList.add('alert', `alert-${type}`, 'alert-dismissible', 'fade', 'show');
+        alertDiv.setAttribute('role', 'alert');
+        alertDiv.innerHTML = `
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">×</span>
+            </button>
+            ${message}
+            <div class="custom-progress-bar mt-2">
+                <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+        `;
+
+        document.querySelector('.row.mt-4').insertAdjacentElement('beforebegin', alertDiv);
+
+        setTimeout(() => {
+            alertDiv.remove();
+        }, 7000);
+    }
+</script>
+
+
+</body>
+</html>

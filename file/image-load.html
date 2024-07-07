@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <title>image load</title>
+  <script src="https://www.gstatic.com/firebasejs/7.14.2/firebase.js"></script>
+  <style type="text/css" media="all">
+    body {
+      zoom: 3;
+    }
+    .card-mb-3 {
+      margin-top: 30px;
+      border-radius: 10px;
+      border: 1px solid gray;
+      padding: 10px;
+    }
+    .text1 {
+      color: red;
+    }
+    p {
+      font-size: 10px;
+    }
+    img {
+      margin-top: -20px;
+      margin-bottom: 5px;
+      border-radius: 10px;
+    }
+    video{
+     margin-top: -20px;
+      margin-bottom: 5px;
+      border-radius: 10px;
+    }
+    .views{
+     color: ;
+     margin-left: 240px;
+     margin-top: -40px;
+    }
+  </style>
+</head>
+<body>
+ 
+  <div class="">
+    <div id="blog-posts" class="mt-4"></div>
+  </div>
+
+  <script>
+    
+    var firebaseConfig = {
+        apiKey: "AIzaSyDIijjkD8sWiMMYQOr6fzf2gy4mO086px4",
+        authDomain: "file-up-and-see.firebaseapp.com",
+        databaseURL: "https://file-up-and-see-default-rtdb.firebaseio.com",
+        projectId: "file-up-and-see",
+        storageBucket: "file-up-and-see.appspot.com",
+        messagingSenderId: "467223490440",
+        appId: "1:467223490440:web:c6a65e823f20edf427943d"
+    };
+    
+    firebase.initializeApp(firebaseConfig);
+    firebase.analytics();
+  </script>
+
+  <script>
+    function incrementViewCount(postId) {
+      var postRef = firebase.database().ref('image/' + postId + '/views');
+
+      postRef.transaction(function(currentViews) {
+        return (currentViews || 0) + 1; 
+      }).then(function() {
+        console.log(`View count incremented for post: ${postId}`);
+      }).catch(function(error) {
+        console.error(`Error incrementing view count for post: ${postId}`, error);
+      });
+    }
+
+    function loadBlogData() {
+      var blogPostsDiv = document.getElementById('blog-posts');
+      blogPostsDiv.innerHTML = '';
+
+      firebase.database().ref('image/').once('value')
+        .then(function(snapshot) {
+          var data = snapshot.val();
+          if (data) {
+            var entries = Object.entries(data).reverse(); 
+            for (let [key, value] of entries) {
+              incrementViewCount(key); 
+
+              var mediaElement = '';
+              if (value.mediaType) {
+                if (value.mediaType.startsWith('image/')) {
+                  mediaElement = "<img src='" + value.mediaURL + "' style='width:100%; height:auto;'>";
+                } else if (value.mediaType.startsWith('video/')) {
+                  mediaElement = "<video width='100%' height='auto' controls><source src='" + value.mediaURL + "' type='" + value.mediaType + "'>Your browser does not support the video tag.</video>";
+                } else if (value.mediaType.startsWith('audio/')) {
+                  mediaElement = "<audio controls><source src='" + value.mediaURL + "' type='" + value.mediaType + "'>Your browser does not support the audio element.</audio>";
+                } else {
+                  mediaElement = "<a href='" + value.mediaURL + "' download>Download File</a>";
+                }
+              } else {
+                mediaElement = "<p>No media uploaded</p>";
+              }
+
+              blogPostsDiv.innerHTML +=
+                "<div class='card-mb-3'>" +
+                "<div class='card-body'>" +
+                "<h4 class='card-title'>" + mediaElement + value.text1 + "</h4>" +
+                "<p class='card-text'>Channel: " + value.text2 + "</p>" +
+                "<p class='card-text'>Date: " + value.text3 + "</p>" +
+                "<p class='views'>Views: " + (value.views || 0) + "</p>" + 
+                "</div></div>";
+            }
+          } else {
+            blogPostsDiv.innerHTML = "<p>No blog posts found.</p>";
+          }
+        })
+        .catch(function(error) {
+          console.error("Error loading blog data:", error);
+          blogPostsDiv.innerHTML = "<p>Error loading blog data. Please try again later.</p>";
+        });
+    }
+
+    // Load blog data immediately when the page loads
+    window.onload = loadBlogData;
+  </script>
+</body>
+</html>
